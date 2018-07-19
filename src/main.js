@@ -24,8 +24,12 @@ const setting = {
 
 firestore.settings(setting);
 export const db = firestore;
-export const auth = firebase.auth()
+export const auth = firebase.auth();
+export const authGoogle = new firebase.auth.GoogleAuthProvider();
+export const authFacebook = new firebase.auth.FacebookAuthProvider();
 export const storage = firebase.storage();
+
+
 
 Vue.config.productionTip = false
 

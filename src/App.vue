@@ -2,7 +2,10 @@
   <div id="app">
 
     <div id="auth">
-      <a @click="register">Register</a>
+      <button @click="register">Register</button>
+      <button @click="loginGmail">Gmail Login</button>
+      <button @click="loginFacebook">Facebook Login</button>
+      <button @click="getUserInfo">User Information</button>
     </div>
 
     <div>
@@ -18,7 +21,7 @@
       </ul>
       <input type="text" v-model="todo"> <br>
       <input type="text" v-model="color">
-      <a @click="addTodo">Submit</a>
+      <button @click="addTodo">Submit</button>
     </div>
 
     <div>
@@ -29,7 +32,7 @@
 </template>
 
 <script>
-import { db, auth, storage } from "./main";
+import { db, auth, authGoogle, storage, authFacebook } from "./main";
 export default {
   name: "app",
   data() {
@@ -50,6 +53,62 @@ export default {
     };
   },
   methods: {
+    /*
+      To get user informaions, if there's no user signed in, will return null.
+    */
+    getUserInfo() {
+      console.log(auth.currentUser);
+    },
+    loginGmail() {
+      const provider = authGoogle;
+      auth
+        .signInWithPopup(provider)
+        .then(function(result) {
+          // This gives you a Google Access Token. You can use it to access the Google API.
+          var token = result.credential.accessToken;
+          // The signed-in user info.
+          var user = result.user;
+          // ...
+          console.log(user);
+        })
+        .catch(function(error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          // The email of the user's account used.
+          var email = error.email;
+          // The firebase.auth.AuthCredential type that was used.
+          var credential = error.credential;
+          // ...
+          console.log("err");
+          console.log(`${errorCode} ${errorMessage}`);
+        });
+    },
+    loginFacebook() {
+      const provider = authFacebook;
+      auth
+        .signInWithPopup(provider)
+        .then(function(result) {
+          // This gives you a Google Access Token. You can use it to access the Google API.
+          var token = result.credential.accessToken;
+          // The signed-in user info.
+          var user = result.user;
+          // ...
+          console.log(user);
+        })
+        .catch(function(error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          // The email of the user's account used.
+          var email = error.email;
+          // The firebase.auth.AuthCredential type that was used.
+          var credential = error.credential;
+          // ...
+          console.log("err");
+          console.log(`${errorCode} ${errorMessage}`);
+        });
+    },
     register() {
       console.log("register");
       auth
