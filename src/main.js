@@ -5,6 +5,7 @@ import VueFire from 'vuefire'
 import firebase from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/auth'
+import 'firebase/storage'
 
 Vue.use(VueFire)
 firebase.initializeApp({
@@ -24,7 +25,7 @@ const setting = {
 firestore.settings(setting);
 export const db = firestore;
 export const auth = firebase.auth()
-
+export const storage = firebase.storage();
 
 Vue.config.productionTip = false
 

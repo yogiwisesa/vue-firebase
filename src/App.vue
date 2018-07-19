@@ -21,11 +21,15 @@
       <a @click="addTodo">Submit</a>
     </div>
 
+    <div>
+      <input type="file" multiple accept="image/jpeg" @change="detectFiles($event.target.files)">
+      <div class="progress-bar" :style="{ width: progressUpload + '%'}">{{ progressUpload }}%</div>
+    </div>
   </div>
 </template>
 
 <script>
-import { db, auth } from "./main";
+import { db, auth, storage } from "./main";
 export default {
   name: "app",
   data() {
@@ -34,7 +38,10 @@ export default {
       password: "1234567890",
       todo: "",
       color: "",
-      todos: [{ todo: "xx", color: "red" }]
+      todos: [],
+      progressUpload: 0,
+      file: File,
+      uploadTask: ""
     };
   },
   firestore() {
@@ -70,6 +77,33 @@ export default {
         .collection("todos")
         .doc(id)
         .delete();
+    },
+    detectFiles(fileList) {
+      Array.from(Array(fileList.length).keys()).map(x => {
+        this.upload(fileList[x]);
+      });
+    },
+    upload(file) {
+      this.uploadTask = storage.ref(file.name).put(file);
+    }
+  },
+  watch: {
+    uploadTask: function() {
+      this.uploadTask.on(
+        "state_changed",
+        sp => {
+          this.progressUpload = Math.floor(
+            sp.bytesTransferred / sp.totalBytes * 100
+          );
+        },
+        null,
+        () => {
+          this.uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+            this.$emit("url", downloadURL);
+            console.log(downloadURL);
+          });
+        }
+      );
     }
   }
 };
